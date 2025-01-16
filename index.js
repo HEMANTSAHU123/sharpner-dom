@@ -1,43 +1,68 @@
 // Add the Edit Button:
 
 
-// Implement the code as in video but with one extra 'Edit' button in 'li'
-const form = document.querySelector('form');
-const fruits = document.querySelector('.fruits');
-function addButtonsToFruitItem(fruitItem) {
-    // Ensure the fruit item has both buttons
-    if (!fruitItem.querySelector('.delete-btn')) {
-        const deleteButton = document.createElement('button');
-        deleteButton.classList.add('delete-btn');
-        deleteButton.textContent = 'x';
-        fruitItem.appendChild(deleteButton);
-    }
+// Implement the code as in video but with one extra 'Edit' button in 'li
+const fruitItems = document.getElementsByClassName('fruit')
 
-    if (!fruitItem.querySelector('.edit-btn')) {
-        const editButton = document.createElement('button');
-        editButton.classList.add('edit-btn');
-        editButton.textContent = 'Edit';
-        fruitItem.appendChild(editButton);
-    }
+const description = {
+    Banana: "A long curved fruit with a yellow skin, soft flesh, and multiple seeds",
+    Apple: "A round fruit typically with red, green, or yellow skin, containing seeds in its core",
+    Orange: "A round fruit with a tough orange rind and juicy segmented flesh inside",
+    Kiwi: "A small fruit with brown fuzzy skin, green flesh, and black seeds inside"
+}
+for (const fruitItem of fruitItems) {
+    const name = fruitItem.firstChild.textContent
+
+    fruitItem.innerHTML = name + `<p>${name} : ${description[name]}</p>`
 }
 
+const form = document.querySelector('form')
+const button = form.querySelector('button')
 
-form.addEventListener('submit', function (event) {
+const descriptionInput = document.createElement('input')
+descriptionInput.type = 'text'
+descriptionInput.name = 'description'
+descriptionInput.id = 'description'
+
+form.insertBefore(descriptionInput, button);
+form.addEventListener('submit', (event) => {
     event.preventDefault();
-    const addtofruit = document.getElementById('fruit-to-add');
-    const newLi = document.createElement('li');
-    // newLi.innerHTML=addtofruit.value + '<button class="delete-btn">x</button> <button class="edit-btn">Edit</button>';
-    newLi.classList.add('fruit');
-    newLi.innerHTML = addtofruit.value;
-    fruits.appendChild(newLi);
-    addButtonsToFruitItem(newLi);
 
-})
-fruits.addEventListener('click', function (event) {
-    if (event.target.classList.contains("delete-btn")) {
-        const fruittodelete = event.target.parentElement;
-        fruits.removeChild(fruittodelete);
-    };
-})
-document.querySelectorAll('.fruits .fruit').forEach(addButtonsToFruitItem);
+    const fruitInput = form.querySelector('#fruit-to-add').value;
+    const description = form.querySelector('#description').value;
 
+    const fruitList = document.querySelector('.fruits')
+    const li = document.createElement('li')
+
+    li.innerHTML = fruitInput + ` <p style="font-style:italic">${description}</p>`
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'x';
+    deleteButton.className = 'delete-btn';
+    deleteButton.addEventListener('click', function () {
+        fruitList.removeChild(li);
+    });
+
+    li.appendChild(deleteButton);
+    fruitList.appendChild(li);
+
+    form.reset();
+});
+const filter = document.getElementById('filter')
+
+filter.addEventListener('keyup', (event) => {
+    const textEnterd = event.target.value.toLowerCase()
+
+
+    const fruitItems = document.getElementsByClassName('fruit')
+    for (const fruitItem of fruitItems) {
+        const currentFruitText = fruitItem.firstChild.textContent.toLocaleLowerCase()
+
+        console.log(fruitItem.lastChild.textContent)
+
+
+        const currentFruitTextIndex = currentFruitText.indexOf(textEnterd)
+
+
+        fruitItem.style.display = (currentFruitTextIndex == -1) ? "none" : 'flex'
+    }
+})
